@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <!--showing card of items-->
+    <div class="row mx-3">
+        <!--this for loop will take the tabel and create card for each object-->
+        
+   
+            {%  for l in listing %}
+                {% if user == l.price.userbidding  %}
+            
+                <div class="card mx-3" style="width: 18rem;">
+                    <img src="{{ l.imageurl }}" class="card-img-top" alt="{{l.title}} pics">
+                    <div class="card-body">
+                    <h5 class="card-title">{{l.title}}</h5>
+                    <p class="card-text"> {{l.about}} </p>
+                    <p> Price: {{l.price.bid}} </p>
+                    <!--here id is the from for loop -->
+                    <a href="{% url 'listing' id=l.id %}" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+                {% endif %}
+            
+            {% endfor%}
+        
+    </div>
+      
+{% endblock %}

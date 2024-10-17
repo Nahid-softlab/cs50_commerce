@@ -1,0 +1,26 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active watchlist</h2>
+    
+    
+
+    <!--display watchlis -->
+    <div class="row mx-3">
+    {%  for l in listing %}
+    
+        <div class="card mx-3" style="width: 18rem;">
+            <img src="{{ l.imageurl }}" class="card-img-top" alt="{{l.title}} pics">
+            <div class="card-body">
+            <h5 class="card-title">{{l.title}}</h5>
+            <p class="card-text"> {{l.about}} </p>
+            <p>Price: {{l.price}}</p>
+            <!--here id is the from for loop -->
+            <a href="{% url 'listing' id=l.id %}" class="btn btn-primary">Details</a>
+            </div>
+        </div>
+    
+    {% endfor%}
+    </div>
+      
+{% endblock %}

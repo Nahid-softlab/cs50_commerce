@@ -1,0 +1,120 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+   <!--add/remve/close button ----where user can add/remove and close-auction from the listing details-->
+
+    <div class="row mx-3">
+        {% if user.is_authenticated and item.active %}
+            {% if isOwner %}
+              <form action="{% url 'closeauction' id=item.id %}" method="post">
+                 {% csrf_token %}
+                 <button style="margin-right: 10px;" type="submit" class="btn btn-danger">Close this auction</button>
+              </form>
+            {% endif %}
+            
+            {% if isWatchlisted %}
+              <form action="{% url 'removewatchlist' id=item.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove item from watchlist</button>
+              </form>
+             {% else %}
+             <form action="{% url 'addwatchlist' id=item.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">ADD item to watchlist</button>
+              </form>
+
+            {% endif %}
+        {% endif %}
+
+    </div>
+    <br>
+
+    <!--alert for auction winner-->
+    {% if not item.active and user == item.price.userbidding  %}
+      <div class="alert alert-primary" role="alert">
+         <p>Congratulation you won the auction</p>
+      </div>
+    {% endif %}
+
+
+    <!--alert message-->
+    <div class="container">
+      {%  if message %}
+          {% if update %}
+            <div class="alert alert-primary" role="alert">
+              {{ message }}
+            </div>
+          {% else %}
+          <div class="alert alert-danger" role="alert">
+            {{ message }}
+          </div>
+
+          {% endif%}
+      {% endif %}
+    </div>
+
+    <!-- basic listing of item when click details-->
+    <div class="container">
+    <h2>{{ item.title }}</h2>
+    <img src="{{item.imageurl}}" alt="{{item.title}}" height="400px">
+    <p>{{ item.about}}</p>
+    <br><br>
+    <p>{{item.owner}}</p>
+
+    <p> Initital price: ${{ item.price.bid}}</p> <br/>
+    </div>
+    <!--bidding area-->
+
+    
+
+    <!--Form: submit bidding form-->
+    <div class="container">
+      <h2> Enter Bidding </h2>
+        {% if user.is_authenticated %}
+          <form action="{% url 'addnewbid' id=item.id  %}" method="post">
+            {% csrf_token%}
+            <div class="mb-3">
+              <label for="bid" class="form-label">Bid:</label>
+              <input type="number" min="0" name="bid" id="bid" placeholder="ADD new Bid">
+              <button type="submit" class="btn btn-success">Submit</button>    
+            </div>
+          </form>
+      {% endif %}
+    </div>
+    <br>
+
+
+    <!--show the comments-->
+    <div class="container">
+      <h2>previous commnets</h2>
+      <ul class="list-group">
+        {% for comment in comments %}
+          <li class="list-group-item">posted by <strong> {{comment.writer}}</strong>
+            <br>
+            <p>{{ comment.message }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <br>
+
+    <!--comments adding form-->
+    <div class="container">
+      <h2> ADD A Comment</h2>
+      {% if user.is_authenticated %}
+        <form action="{% url 'addnewcomment' id=item.id  %}" method="post">
+          {% csrf_token%}
+          <div class="mb-3">
+            <label for="cmt" class="form-label">Comment</label>
+            <input type="text" name="commnent" id="cmt" placeholder="ADD new Commnet">
+            <button type="submit" class="btn btn-success">add</button>    
+          </div>
+          
+        </form>
+
+      {% endif %}
+
+    </div>
+      
+{% endblock %}
